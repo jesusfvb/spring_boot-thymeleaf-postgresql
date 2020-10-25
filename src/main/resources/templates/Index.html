@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRDE</title>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{bootstrap-grid.min.css}">
+    <link rel="stylesheet" th:href="@{bootstrap-reboot.min.css}">
+</head>
+
+<body class="container-fluid">
+    <div class="row">
+        <div class="col pl-0 pr-0">
+            <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+                    aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" th:href="@{/home}">GDRE</a>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li name="nav-item" class="nav-item ">
+                            <a class="nav-link" th:href="@{/home}">Home</a>
+                        </li>
+                        <li name="nav-item" class="nav-item ">
+                            <a class="nav-link" th:href="@{/cuarteleria}">Cuarteleria</a>
+                        </li>
+                        <li name="nav-item" class="nav-item ">
+                            <a class="nav-link" th:href="@{/guardia}">Guardia</a>
+                        </li>
+                        <li name="nav-item" class="nav-item ">
+                            <a class="nav-link" th:href="@{/ubicacion}">Ubicacion</a>
+                        </li>
+                        <li name="nav-item" class="nav-item ">
+                            <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                        </li>
+                    </ul>
+                    <div class="nav-item btn-group">
+                        <button type="button" class="btn btn-success">Nombre De Usuario</button>
+                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Desconectartse</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div th:replace="${ruta} ::${fragmento}">
+
+        </div>
+    </div>
+    <!-- JS -->
+    <script th:src="@{jquery.min.js}"></script>
+    <script th:src="@{jquery.slim.min.js}"></script>
+    <script th:src="@{popper.min.js}"></script>
+    <script th:src="@{bootstrap.min.js}"></script>
+    <script th:src="@{bootstrap.bundle.min.js}"></script>
+    <script th:src="@{helper.js}"></script>
+</body>
+
+</html>

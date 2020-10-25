@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="col mt-5" th:fragment="home">
+        <div class="row">
+            <div class="col">
+                <div href="Home" class="card mb-3">
+                    <img th:src="@{Img/cuarteleria.jpg}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Cuarteleria</h5>
+                        <a th:href="@{/cuarteleria}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-3">
+                    <img th:src="@{Img/guardia.jpg}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Guardia</h5>
+                        <a th:href="@{/guardia}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-3">
+                    <img th:src="@{Img/ubicacion.jpg}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Ubicacion</h5>
+                        <a th:href="@{/ubicacion}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
