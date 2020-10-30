@@ -1,0 +1,8 @@
+.st{
+    width: 10px;
+}
+.contenedorDeNotificaciones{
+    position: fixed;
+    bottom: 0%;
+    right: 1%;
+}

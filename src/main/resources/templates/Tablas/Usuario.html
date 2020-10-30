@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="tabla" class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" class="st"><button id="bst" type="button" class="btn btn-dark btn-sm">ST</button>
+                    </th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Solapin</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col" class="st">Modificar</th>
+                    <th scope="col" class="st">Borrar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each=" user : ${users}">
+                    <th>
+                        <input th:id="${user.id}" class="stc ml-2" type="checkbox" name="cbst">
+                    </th>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.solapin}"></td>
+                    <td th:text="${user.userName}"></td>
+                    <td th:text="${user.rol}"></td>
+                    <td>
+                        <form th:action="@{/usuarios/modificar}" method="POST">
+                            <input type="hidden" name="id" th:value="${user.id}">
+                            <button type="submit" class="btn btn-warning btn-sm">Modificar</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/usuarios/delete}" method="POST">
+                            <input type="hidden" name="ids" th:value="${user.id}">
+                            <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

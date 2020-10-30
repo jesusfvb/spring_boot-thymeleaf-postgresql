@@ -9,6 +9,7 @@
     <link rel="stylesheet" th:href="@{bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{bootstrap-grid.min.css}">
     <link rel="stylesheet" th:href="@{bootstrap-reboot.min.css}">
+    <link rel="stylesheet" th:href="@{helper.css}">
 </head>
 
 <body class="container-fluid">
@@ -53,9 +54,10 @@
         </div>
     </div>
     <div class="row">
-        <div th:replace="${ruta} ::${fragmento}">
-
-        </div>
+        <div th:replace="${ruta} ::${fragmento}"></div>
+    </div>
+    <div class="contenedorDeNotificaciones" id="contenedorDeNotificaciones">
+        <i id="referencia" />
     </div>
     <!-- JS -->
     <script th:src="@{jquery.min.js}"></script>

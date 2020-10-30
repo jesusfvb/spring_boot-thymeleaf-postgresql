@@ -1,52 +1,77 @@
 package com.backend.backend.controls;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.backend.backend.repositorys.Users;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
-@RequestMapping("/users")
-@CrossOrigin(value = "*")
+@Controller
+@RequestMapping("/usuarios")
 public class UsersControls {
+
+    private Map<String, Object> atributes = new HashMap<>();
+    private Boolean redirect = false;
 
     @Autowired
     private UsersServises servises;
 
     @GetMapping()
-    private ResponseEntity<List<Users>> list() {
-        return new ResponseEntity<>(servises.allUsers(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    private ResponseEntity<Users> findById(@PathVariable Integer id) {
-        return new ResponseEntity<>(servises.findUserById(id), HttpStatus.OK);
-    }
-
-    @PutMapping()
-    private ResponseEntity<Object> save(@RequestBody Users users) {
-        servises.saveUser(users);
-        return new ResponseEntity<>("Usuario Añadido", HttpStatus.OK);
+    private ModelAndView listar() {
+        if (redirect) {
+            this.redirect = false;
+            return new ModelAndView("Index.html", atributes);
+        } else {
+            atributes.put("users", servises.allUsers());
+            atributes.put("buscar", "");
+            atributes.put("userForm", new Users());
+            atributes.put("modificar", false);
+            atributes.put("ruta", "Marco");
+            atributes.put("fragmento", "marco");
+            atributes.put("formulario", "Forms/Usuario.html");
+            atributes.put("tabla", "Tablas/Usuario.html");
+            return new ModelAndView("Index.html", atributes);
+        }
     }
 
     @PostMapping()
-    private ResponseEntity<Object> update(@RequestBody Users user) {
-        servises.updateUsers(user);
-        return new ResponseEntity<>("Usuario Modificado", HttpStatus.OK);
+    private String saveAnUpdate(@ModelAttribute("userForm") Users users) {
+        if (users.getId() == null) {
+            servises.saveUser(users);
+        } else {
+            servises.updateUsers(users);
+        }
+        return "redirect:/usuarios";
     }
 
-    @DeleteMapping()
-    private ResponseEntity<Object> delete(@RequestBody Integer ids[]) {
+    @PostMapping("/modificar")
+    private String buscarPorId(@RequestParam Integer id) {
+        this.redirect = true;
+        atributes.replace("modificar", true);
+        atributes.replace("userForm", servises.findUserById(id));
+        return "redirect:/usuarios";
+    }
+
+    @PostMapping("/delete")
+    private String delete(@RequestParam Integer ids[]) {
         servises.deleteUsers(ids);
-        return new ResponseEntity<>("Usuario(s) Eliminado(s)", HttpStatus.OK);
+        return "redirect:/usuarios";
     }
 
-    @PatchMapping("/{text}")
-    private ResponseEntity<List<Users>> searchUsers(@PathVariable String text) {
-        return new ResponseEntity<>(servises.searchUsers(text), HttpStatus.OK);
+    @PostMapping("/buscar")
+    private String searchUsers(@RequestParam String text) {
+        this.redirect = true;
+        if (text.equals("")) {
+            atributes.replace("users", servises.allUsers());
+        } else {
+            atributes.replace("users", servises.searchUsers(text));
+        }
+        atributes.replace("buscar", text);
+        return "redirect:/usuarios";
     }
 }
