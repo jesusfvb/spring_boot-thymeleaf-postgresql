@@ -41,8 +41,10 @@
             form.reset()
             let inputs = Array.from(form).filter(input => input.tagName == "INPUT" || input.tagName == "SELECT")
             inputs.forEach(input => {
-                input.classList.remove("is-valid")
-                input.classList.add("is-invalid")
+                if (input.classList.contains("is-valid")) {
+                    input.classList.remove("is-valid")
+                    input.classList.add("is-invalid")
+                }
             })
         })
     }
@@ -55,14 +57,14 @@
             let checkboxs = Array.from(document.getElementsByName("cbst")).filter(checkbox => checkbox.checked == true)
             if (checkboxs.length > 0) {
                 let formulario = `
-                <form action="/usuarios/delete" method="POST" id="momentanio">
+                <form action="${window.location.pathname}/delete" method="POST" id="momentanio">
                     ${checkboxs.map(checkbox => `<input type="hidden" name="ids" value="${checkbox.id}">`)}
                 </form>`
                 document.getElementsByTagName("table")[0].insertAdjacentHTML("afterend", formulario)
                 formulario = document.getElementById("momentanio")
                 formulario.submit()
                 formulario.remove()
-            } else{
+            } else {
                 Error("Seleccione Alguno");
             }
         })
@@ -75,7 +77,7 @@
         pivote.addEventListener("keypress", (e) => {
             if (e.key == "Enter") {
                 let formulario = `
-                <form action="/usuarios/buscar" method="POST" id="momentanio">
+                <form action="${window.location.pathname}/buscar" method="POST" id="momentanio">
                     <input type="hidden" name="text" value="${e.target.value}">
                 </form>`
                 document.getElementsByTagName("table")[0].insertAdjacentHTML("afterend", formulario)
@@ -93,7 +95,7 @@
         pivote.addEventListener("click", (e) => {
             document.getElementById("filtar").value = ""
             let formulario = `
-                <form action="/usuarios/buscar" method="POST" id="momentanio">
+                <form action="${window.location.pathname}/buscar" method="POST" id="momentanio">
                     <input type="hidden" name="text" value="">
                 </form>`
             document.getElementsByTagName("table")[0].insertAdjacentHTML("afterend", formulario)
@@ -131,25 +133,42 @@
     let pivote = document.getElementById("nombre")
     if (pivote != null) {
         pivote.addEventListener("input", (e) => {
-            let valor = e.target.value.toString(), balido = true
-            if (balido) {
-                balido = Boolean(valor.length >= 3)
-            }
-            if (balido) {
-                balido = !/\d/.test(valor)
-            }
-            if (balido) {
-                balido = !/([0-9]|[A-Z][A-Z]|[a-z][A-Z]|\s[a-z])/.test(valor)
-            }
-            if (balido) {
-                balido = /([A-Z][a-z]+\s[A-Z]|[A-Z][a-z]+)/.test(valor)
-            }
-            if (balido) {
-                valor = valor.match(/\W/g);
-                if (valor != null) {
-                    valor = valor.filter(v => (v != " "))
-                    if (valor.length != 0) {
-                        balido = false;
+            let sugerencias = Array.from(document.getElementsByName("sugerenciaId")), balido = true
+            if (sugerencias.length != 0) {
+                balido = false
+                document.getElementById("userId").value = ""
+                sugerencias.forEach(s => {
+                    if (s.innerHTML == e.target.value) {
+                        balido = true
+                        document.getElementById("userId").value = s.id
+                        s.classList.remove("d-none")
+                    } else if (s.innerText.includes(e.target.value)) {
+                        s.classList.remove("d-none")
+                    } else {
+                        s.classList.add("d-none")
+                    }
+                })
+            } else {
+                let valor = e.target.value.toString()
+                if (balido) {
+                    balido = Boolean(valor.length >= 3)
+                }
+                if (balido) {
+                    balido = !/\d/.test(valor)
+                }
+                if (balido) {
+                    balido = !/([0-9]|[A-Z][A-Z]|[a-z][A-Z]|\s[a-z])/.test(valor)
+                }
+                if (balido) {
+                    balido = /([A-Z][a-z]+\s[A-Z]|[A-Z][a-z]+)/.test(valor)
+                }
+                if (balido) {
+                    valor = valor.match(/\W/g);
+                    if (valor != null) {
+                        valor = valor.filter(v => (v != " "))
+                        if (valor.length != 0) {
+                            balido = false;
+                        }
                     }
                 }
             }
@@ -269,6 +288,52 @@
         })
     }
 })();
+(() => {
+    //Balidar Apartamento
+    let pivote = document.getElementById("apartamento")
+    if (pivote != null) {
+        pivote.addEventListener("input", (e) => {
+            let valor = e.target.value.toString(), balido = true
+            if (balido) {
+                balido = Boolean(valor.length <= 6 && valor.length >= 4)
+            }
+            if (balido) {
+                balido = !/\D/.test(valor)
+            }
+            //Cambo de clase Inbalida a clase Valida
+            if (balido) {
+                e.target.classList.remove("is-invalid")
+                e.target.classList.add("is-valid")
+            } else {
+                e.target.classList.remove("is-valid")
+                e.target.classList.add("is-invalid")
+            }
+        })
+    }
+})();
+(() => {
+    //Balidar Grupo
+    let pivote = document.getElementById("grupo")
+    if (pivote != null) {
+        pivote.addEventListener("input", (e) => {
+            let valor = e.target.value.toString(), balido = true
+            if (balido) {
+                balido = Boolean(valor.length == 4)
+            }
+            if (balido) {
+                balido = !/\D/.test(valor)
+            }
+            //Cambo de clase Inbalida a clase Valida
+            if (balido) {
+                e.target.classList.remove("is-invalid")
+                e.target.classList.add("is-valid")
+            } else {
+                e.target.classList.remove("is-valid")
+                e.target.classList.add("is-invalid")
+            }
+        })
+    }
+})();
 //Funciones para Mostar Error o Notificar
 function Mensaje(texto = "") {
     let contenedor = document.getElementById("contenedorDeNotificaciones")
@@ -292,3 +357,18 @@ function Error(texto = "") {
         contenedor.childNodes[2].remove()
     }, 3000)
 }
+//Funcion para las autosugerencias
+(() => {
+    let pivotes = Array.from(document.getElementsByName("sugerenciaId"));
+    if (pivotes.length != 0) {
+        pivotes.forEach(pivote => {
+            pivote.addEventListener("click", () => {
+                document.getElementById("userId").value = pivote.id
+                let nombre = document.getElementById("nombre")
+                nombre.value = pivote.innerText
+                nombre.classList.remove("is-invalid")
+                nombre.classList.add("is-valid")
+            })
+        })
+    }
+})();
