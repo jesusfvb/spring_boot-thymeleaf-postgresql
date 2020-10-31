@@ -92,8 +92,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "User id:" + id + " name:" + name + " solapin:" + solapin + " user:" + userName + " password:" + password
-                + " rol:" + rol;
+        return name;
     }
 
     private static final long serialVersionUID = 7723197986590521058L;

@@ -74,7 +74,6 @@ public class UbicacionControls {
 
     @PostMapping("/buscar")
     private String searchUsers(@RequestParam("text") String text) {
-        System.out.println(text);
         this.redirect = true;
         if (text.equals("")) {
             atributes.replace("datos", servises.allUbicacion());

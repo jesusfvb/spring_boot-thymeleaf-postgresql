@@ -40,10 +40,20 @@
             let form = document.getElementById("form")
             form.reset()
             let inputs = Array.from(form).filter(input => input.tagName == "INPUT" || input.tagName == "SELECT")
-            inputs.forEach(input => {
-                if (input.classList.contains("is-valid")) {
-                    input.classList.remove("is-valid")
-                    input.classList.add("is-invalid")
+            let modificar = Boolean(document.getElementById("modificar")!=null)
+            inputs.forEach(input => { 
+                if (input.id != "evaluacion") {
+                    if (modificar) {
+                        if (input.classList.contains("is-invalid")) {
+                            input.classList.remove("is-invalid")
+                            input.classList.add("is-valid")
+                        }
+                    } else {
+                        if (input.classList.contains("is-valid")) {
+                            input.classList.remove("is-valid")
+                            input.classList.add("is-invalid")
+                        }
+                    }
                 }
             })
         })
@@ -320,6 +330,26 @@
             if (balido) {
                 balido = Boolean(valor.length == 4)
             }
+            if (balido) {
+                balido = !/\D/.test(valor)
+            }
+            //Cambo de clase Inbalida a clase Valida
+            if (balido) {
+                e.target.classList.remove("is-invalid")
+                e.target.classList.add("is-valid")
+            } else {
+                e.target.classList.remove("is-valid")
+                e.target.classList.add("is-invalid")
+            }
+        })
+    }
+})();
+(() => {
+    //Balidar Fecha
+    let pivote = document.getElementById("fecha")
+    if (pivote != null) {
+        pivote.addEventListener("input", (e) => {
+            let valor = e.target.value.toString(), balido = true
             if (balido) {
                 balido = !/\D/.test(valor)
             }

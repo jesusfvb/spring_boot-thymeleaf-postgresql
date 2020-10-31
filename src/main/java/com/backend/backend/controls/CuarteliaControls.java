@@ -1,62 +1,87 @@
 package com.backend.backend.controls;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.backend.backend.repositorys.Cuarteleria;
 import com.backend.backend.services.CuarteleriaServises;
+import com.backend.backend.services.UbicacionServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
+@Controller
 @RequestMapping("/cuarteleria")
-@CrossOrigin("*")
 public class CuarteliaControls {
+
+    private Map<String, Object> atributes = new HashMap<>();
+    private Boolean redirect = false;
 
     @Autowired
     private CuarteleriaServises servises;
 
+    @Autowired
+    private UbicacionServises uServises;
+
     @GetMapping()
-    private ResponseEntity<List<Cuarteleria>> list() {
-        return new ResponseEntity<>(servises.allCuarteleria(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    private ResponseEntity<Cuarteleria> findById(@PathVariable Integer id) {
-        return new ResponseEntity<>(servises.findCuarteleriaById(id), HttpStatus.OK);
-    }
-
-    @PutMapping()
-    private ResponseEntity<Object> save(@RequestBody Cuarteleria cuarteleria) {
-        servises.saveCuarteleria(cuarteleria);
-        return new ResponseEntity<>("Cuarteleria Añadida", HttpStatus.OK);
+    private ModelAndView list() {
+        if (redirect) {
+            this.redirect = false;
+            return new ModelAndView("Index.html", atributes);
+        } else {
+            atributes.put("datos", servises.allCuarteleria());
+            atributes.put("datosU", uServises.allUbicacion());
+            atributes.put("buscar", "");
+            atributes.put("dataForm", new Cuarteleria());
+            atributes.put("modificar", false);
+            atributes.put("ruta", "Marco");
+            atributes.put("fragmento", "marco");
+            atributes.put("formulario", "Forms/Cuarteleria.html");
+            atributes.put("tabla", "Tablas/Cuarteleria.html");
+            return new ModelAndView("Index.html", atributes);
+        }
     }
 
     @PostMapping()
-    private ResponseEntity<Object> update(@RequestBody Cuarteleria cuarteleria) {
-        servises.updateCuarteleria(cuarteleria);
-        return new ResponseEntity<>("Cuarteleria Modificada", HttpStatus.OK);
+    private String saveAnUpdate(@ModelAttribute("dataForm") Cuarteleria cuarteleria) {
+        if (cuarteleria.getId() == null) {
+            servises.saveCuarteleria(cuarteleria);
+        } else {
+            servises.updateCuarteleria(cuarteleria);
+            ;
+        }
+        return "redirect:/cuarteleria";
     }
 
-    @DeleteMapping()
-    private ResponseEntity<Object> delete(@RequestBody Integer ids[]) {
+    @PostMapping("/modificar")
+    private String findById(@RequestParam("id") Integer id) {
+        this.redirect = true;
+        atributes.replace("modificar", true);
+        atributes.replace("dataForm", servises.findCuarteleriaById(id));
+        return "redirect:/cuarteleria";
+    }
+
+    @PostMapping("/delete")
+    private String delete(@RequestParam("ids") Integer ids[]) {
         servises.deleteCuarteleria(ids);
-        return new ResponseEntity<>("Cuarteleria(s) Eliminada(s)", HttpStatus.OK);
+        return "redirect:/cuarteleria";
     }
 
-    @PatchMapping("/{text}")
-    private ResponseEntity<List<Cuarteleria>> searchUsers(@PathVariable String text) {
-        return new ResponseEntity<>(servises.searchCuarteleria(text), HttpStatus.OK);
+    @PostMapping("/buscar")
+    private String searchUsers(@RequestParam("text") String text) {
+        this.redirect = true;
+        if (text.equals("")) {
+            atributes.replace("datos", servises.allCuarteleria());
+        } else {
+            atributes.replace("datos", servises.searchCuarteleria(text));
+        }
+        atributes.replace("buscar", text);
+        return "redirect:/cuarteleria";
     }
 }

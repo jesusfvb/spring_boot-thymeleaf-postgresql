@@ -8,7 +8,7 @@
                 <div class="col">
                     <h4>
                         <span th:if="${modificar}==false">Añadir</span>
-                        <span th:if="${modificar}==true">Modificar</span> Ubicación
+                        <span id="modificar" th:if="${modificar}==true">Modificar</span> Ubicación
                     </h4>
                 </div>
                 <div class="col-3">
@@ -19,11 +19,11 @@
         <form id="form" th:action="@{/ubicacion}" th:object="${dataForm}" method="POST" autocomplete="off">
             <input type="number" class="d-none" th:field="*{id}">
             <input type="number" class="d-none" th:field="*{user.id}" id="userId">
-            <div class="form-group dropdown" name="dropdown">
+            <div class="form-group dropdown">
                 <label>Nombre</label>
                 <input type="text" class="form-control dropdown-toggle" placeholder="Entre el Nombre" th:value="${dataForm.user.name}"
                     data-toggle="dropdown" th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " id="nombre">
-                <div class="dropdown-menu" th:each=" user : ${datosUsers}" name="dropdown">
+                <div class="dropdown-menu">
                     <a name="sugerenciaId" class="dropdown-item puntero" th:each=" user : ${datosUsers}"
                         th:text="${user.name}" th:id=${user.id}></a>
                 </div>
