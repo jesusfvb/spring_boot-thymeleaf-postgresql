@@ -6,6 +6,8 @@ import java.util.List;
 import com.backend.backend.controls.exceptions.GuardiaException;
 import com.backend.backend.repositorys.Guardia;
 import com.backend.backend.repositorys.GuardiaI;
+import com.backend.backend.repositorys.Integrante;
+import com.backend.backend.repositorys.IntegranteI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class GuardiaServisesI implements GuardiaServises {
 
     @Autowired
     private GuardiaI repository;
+
+    @Autowired
+    private IntegranteI repositoryI;
 
     @Autowired
     private UsersServises service;
@@ -63,5 +68,55 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void deleteGuardia(Integer[] ids) {
         repository.deleteAll(repository.findAllById(Arrays.asList(ids)));
+    }
+
+    @Override
+    public void saveIntegrante(Integer idG, Integrante integrante) {
+        if (integrante.getId() != null) {
+            throw new GuardiaException("Balor invalido para salbar Integrante");
+        } else {
+            integrante.setGuardia(repository.findById(idG).get());
+            repositoryI.save(integrante);
+        }
+    }
+
+    @Override
+    public List<Integrante> allIntegrantes(Integer idG) {
+        return repositoryI.findAllOrderByName(idG);
+    }
+
+    @Override
+    public Integrante findIntegrateById(Integer id) {
+        if (id == null) {
+            throw new GuardiaException("Balor invalido para buscar Integrante por id");
+        } else {
+            return repositoryI.findById(id).get();
+        }
+    }
+
+    @Override
+    public void updateIntegrate(Integer idG, Integrante integrante) {
+        if (integrante.getId() == null) {
+            throw new GuardiaException("Balor invalido para actualizar Integrante");
+        } else {
+            integrante.setGuardia(repository.findById(idG).get());
+            repositoryI.save(integrante);
+        }
+    }
+
+    @Override
+    public void deleteInegrante(Integer[] ids) {
+        repositoryI.deleteAll(repositoryI.findAllById(Arrays.asList(ids)));
+    }
+
+    @Override
+    public void updateAdvertencia(Integer idG, String advertencia) {
+        if (idG == null || advertencia == null) {
+            throw new GuardiaException("Balor invalido para actualizar Advertencia");
+        } else {
+            Guardia g = repository.findById(idG).get();
+            g.setAdvertencia(advertencia);
+            repository.save(g);
+        }
     }
 }

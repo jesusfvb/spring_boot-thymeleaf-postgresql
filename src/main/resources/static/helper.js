@@ -17,6 +17,13 @@
                 }
             }
         }
+        else if (i == 2) {
+            if (pathname == "/integrante") {
+                if (item.classList.contains("active") == false) {
+                    item.classList.add("active")
+                }
+            }
+        }
         else if (item.classList.contains("active")) {
             item.classList.remove = "active"
         }
@@ -40,8 +47,8 @@
             let form = document.getElementById("form")
             form.reset()
             let inputs = Array.from(form).filter(input => input.tagName == "INPUT" || input.tagName == "SELECT")
-            let modificar = Boolean(document.getElementById("modificar")!=null)
-            inputs.forEach(input => { 
+            let modificar = Boolean(document.getElementById("modificar") != null)
+            inputs.forEach(input => {
                 if (input.id != "evaluacion") {
                     if (modificar) {
                         if (input.classList.contains("is-invalid")) {
@@ -299,6 +306,32 @@
     }
 })();
 (() => {
+    //Balidar Ubicacion
+    let pivote = document.getElementById("ubicacion")
+    if (pivote != null) {
+        pivote.addEventListener("change", (e) => {
+            let valor = e.target.value.toString(), balido = true
+            switch (valor) {
+                case "Residencia":
+                case "Docente":
+                    balido = true;
+                    break;
+                default:
+                    balido = false;
+                    break;
+            }
+            //Cambo de clase Inbalida a clase Valida
+            if (balido) {
+                e.target.classList.remove("is-invalid")
+                e.target.classList.add("is-valid")
+            } else {
+                e.target.classList.remove("is-valid")
+                e.target.classList.add("is-invalid")
+            }
+        })
+    }
+})();
+(() => {
     //Balidar Apartamento
     let pivote = document.getElementById("apartamento")
     if (pivote != null) {
@@ -348,10 +381,10 @@
     //Balidar Fecha
     let pivote = document.getElementById("fecha")
     if (pivote != null) {
-        pivote.addEventListener("input", (e) => {
+        pivote.addEventListener("change", (e) => {
             let valor = e.target.value.toString(), balido = true
             if (balido) {
-                balido = !/\D/.test(valor)
+                balido = /\d/.test(valor)
             }
             //Cambo de clase Inbalida a clase Valida
             if (balido) {
@@ -360,6 +393,30 @@
             } else {
                 e.target.classList.remove("is-valid")
                 e.target.classList.add("is-invalid")
+            }
+        })
+    }
+})();
+(() => {
+    //Balidar Hora
+    let pivote = [document.getElementById("inicio"), document.getElementById("fin")]
+    if (pivote.length != 0) {
+        pivote.forEach(p => {
+            if (p != null) {
+                p.addEventListener("change", (e) => {
+                    let valor = e.target.value.toString(), balido = true
+                    if (balido) {
+                        balido = /\d/.test(valor)
+                    }
+                    //Cambo de clase Inbalida a clase Valida
+                    if (balido) {
+                        e.target.classList.remove("is-invalid")
+                        e.target.classList.add("is-valid")
+                    } else {
+                        e.target.classList.remove("is-valid")
+                        e.target.classList.add("is-invalid")
+                    }
+                })
             }
         })
     }
@@ -402,3 +459,23 @@ function Error(texto = "") {
         })
     }
 })();
+(() => {
+    let trs = Array.from(document.getElementsByName("trTable"))
+    if (trs.length != 0) {
+        trs.forEach(tr => {
+            tr.addEventListener("click", (e) => {
+                if (!(e.target.tagName == "BUTTON" || e.target.type == "checkbox")) {
+                    e.preventDefault()
+                    let formulario = `
+                    <form action="/integrante/get" method="POST" id="momentanio">
+                        <input type="hidden" name="id" value="${e.target.parentElement.attributes[2].value}">
+                    </form>`
+                    document.getElementsByTagName("table")[0].insertAdjacentHTML("afterend", formulario)
+                    formulario = document.getElementById("momentanio")
+                    formulario.submit()
+                    formulario.remove()
+                }
+            })
+        })
+    }
+})()

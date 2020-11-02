@@ -3,7 +3,7 @@ package com.backend.backend.controls;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.backend.backend.repositorys.Guardia;
+import com.backend.backend.repositorys.Integrante;
 import com.backend.backend.services.GuardiaServises;
 import com.backend.backend.services.UsersServises;
 
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/guardia")
-public class GuardiaControls {
+@RequestMapping("/integrante")
+public class IntegrantesControls {
     private Map<String, Object> atributes = new HashMap<>();
     private Boolean redirect = false;
 
@@ -34,53 +34,55 @@ public class GuardiaControls {
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
-            atributes.put("datos", servises.allGuardia());
+            atributes.put("id", 1);
+            atributes.put("datos", servises.allIntegrantes((Integer) atributes.get("id")));
+            atributes.put("guardia", servises.findGuardiaById((Integer) atributes.get("id")));
             atributes.put("datosU", uServises.allUsers());
             atributes.put("buscar", "");
-            atributes.put("dataForm", new Guardia());
+            atributes.put("dataForm", new Integrante());
             atributes.put("modificar", false);
             atributes.put("ruta", "Marco");
             atributes.put("fragmento", "marco");
-            atributes.put("formulario", "Forms/Guardia.html");
-            atributes.put("tabla", "Tablas/Guardia.html");
+            atributes.put("formulario", "Forms/Integrante.html");
+            atributes.put("tabla", "Tablas/Integrante.html");
             return new ModelAndView("Index.html", atributes);
         }
     }
 
+    @PostMapping("/get")
+    private String get(@RequestParam("id") Integer id) {
+        atributes.put("id", id);
+        return "redirect:/integrante";
+    }
+
     @PostMapping()
-    private String saveAnUpdate(@ModelAttribute("dataForm") Guardia guardia) {
-        if (guardia.getId() == null) {
-            servises.saveGuardia(guardia);
+    private String saveAnUpdate(@ModelAttribute("dataForm") Integrante integrante) {
+        if (integrante.getId() == null) {
+            servises.saveIntegrante((Integer) atributes.get("id"), integrante);
         } else {
-            servises.updateGuardia(guardia);
-            ;
+            servises.updateIntegrate((Integer) atributes.get("id"), integrante);
         }
-        return "redirect:/guardia";
+        return "redirect:/integrante";
     }
 
     @PostMapping("/modificar")
     private String findById(@RequestParam("id") Integer id) {
         this.redirect = true;
         atributes.replace("modificar", true);
-        atributes.replace("dataForm", servises.findGuardiaById(id));
-        return "redirect:/guardia";
+        atributes.replace("dataForm", servises.findIntegrateById(id));
+        return "redirect:/integrante";
     }
 
     @PostMapping("/delete")
     private String delete(@RequestParam("ids") Integer ids[]) {
-        servises.deleteGuardia(ids);
-        return "redirect:/guardia";
+        servises.deleteInegrante(ids);
+        return "redirect:/integrante";
     }
 
-    @PostMapping("/buscar")
-    private String searchUsers(@RequestParam("text") String text) {
-        this.redirect = true;
-        if (text.equals("")) {
-            atributes.replace("datos", servises.allGuardia());
-        } else {
-            atributes.replace("datos", servises.searchGuardia(text));
-        }
-        atributes.replace("buscar", text);
-        return "redirect:/guardia";
+    @PostMapping("/advertencia")
+    private String advertencia(@RequestParam("advertencia") String advertencia) {
+        servises.updateAdvertencia((Integer) atributes.get("id"), advertencia);;
+        return "redirect:/integrante";
     }
+
 }

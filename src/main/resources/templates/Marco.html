@@ -12,11 +12,22 @@
             <div class="col mt-2">
                 <div class="row">
                     <div class="col">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Filtrar (Precione Enter) Canseler Filtro Precione X" id="filtar" th:value="${buscar}"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group mb-3" th:if="${guardia}!=null" th:each=" g : ${guardia}">
+                            <input type="text" class="form-control"
+                                th:placeholder="${g.representante.name} +' | '+${g.fecha} +' | '+${g.inicio} +' | '+${g.fin} +' | '+${g.ubicacion}"
+                                disabled>
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" id="bfiltar" >X</button>
+                                <a href="/guardia" type="button" class="btn btn-primary" id="bfiltar">
+                                    <-- </a>
+                                        <button type="button" class="btn btn-danger" id="bobor">Borrar</button>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3" th:if="${guardia}==null">
+                            <input type="text" class="form-control"
+                                placeholder="Filtrar (Precione Enter) Canseler Filtro Precione X" id="filtar"
+                                th:value="${buscar}" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="bfiltar">X</button>
                                 <button type="button" class="btn btn-danger" id="bobor">Borrar</button>
                             </div>
                         </div>

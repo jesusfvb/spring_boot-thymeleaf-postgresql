@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="tabla" class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" class="st"><button id="bst" type="button" class="btn btn-dark btn-sm">ST</button>
+                    </th>
+                    <th scope="col">Nombre Representante</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fin</th>
+                    <th scope="col">Ubicacion</th>
+                    <th scope="col" class="st">Modificar</th>
+                    <th scope="col" class="st">Borrar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each=" dato : ${datos}" class="puntero" name="trTable" th:data-id="${dato.id}">
+                    <th>
+                        <input th:id="${dato.id}" class="stc ml-2" type="checkbox" name="cbst">
+                    </th>
+                    <td th:text="${dato.representante.name}"></td>
+                    <td th:text="${dato.fecha}"></td>
+                    <td th:text="${dato.inicio}"></td>
+                    <td th:text="${dato.fin}"></td>
+                    <td th:text="${dato.ubicacion}"></td>
+                    <td>
+                        <form th:action="@{/guardia/modificar}" method="POST">
+                            <input type="hidden" name="id" th:value="${dato.id}">
+                            <button type="submit" class="btn btn-warning btn-sm">Modificar</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/guardia/delete}" method="POST">
+                            <input type="hidden" name="ids" th:value="${dato.id}">
+                            <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

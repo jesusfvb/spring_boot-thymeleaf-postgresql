@@ -5,14 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
-
-import com.backend.backend.repositorys.Cuarteleria.Evaluacion;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Guardia implements Serializable {
@@ -36,10 +30,6 @@ public class Guardia implements Serializable {
     private Users representante;
     @Column
     private Lugar ubicacion;
-    @ManyToMany
-    List<Users> integrantes;
-    @Column
-    ArrayList<Evaluacion> evaluaciones;
     @Column
     private String seach;
 
@@ -100,22 +90,6 @@ public class Guardia implements Serializable {
 
     public void setUbicacion(Lugar ubicacion) {
         this.ubicacion = ubicacion;
-    }
-
-    public List<Users> getIntegrantes() {
-        return integrantes;
-    }
-
-    public void setIntegrantes(List<Users> integrantes) {
-        this.integrantes = integrantes;
-    }
-
-    public ArrayList<Evaluacion> getEvaluaciones() {
-        return evaluaciones;
-    }
-
-    public void setEvaluaciones(ArrayList<Evaluacion> evaluaciones) {
-        this.evaluaciones = evaluaciones;
     }
 
     public String getSeach() {
