@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRDE</title>
     <!-- CSS -->
-    <link rel="stylesheet" th:href="@{bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{bootstrap-grid.min.css}">
-    <link rel="stylesheet" th:href="@{bootstrap-reboot.min.css}">
-    <link rel="stylesheet" th:href="@{helper.css}">
+    <link rel="stylesheet" th:href="@{Css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{Css/bootstrap-grid.min.css}">
+    <link rel="stylesheet" th:href="@{Css/bootstrap-reboot.min.css}">
+    <link rel="stylesheet" th:href="@{Css/helper.css}">
 </head>
 
-<body class="container-fluid">
+<body class="container-fluid" th:if="${login}==null">
     <div class="row">
         <div class="col pl-0 pr-0">
             <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
@@ -46,7 +46,7 @@
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Desconectartse</a>
+                            <a class="dropdown-item" th:href="@{/logout}">Desconectartse</a>
                         </div>
                     </div>
                 </div>
@@ -60,12 +60,16 @@
         <i id="referencia" />
     </div>
     <!-- JS -->
-    <script th:src="@{jquery.min.js}"></script>
-    <script th:src="@{jquery.slim.min.js}"></script>
-    <script th:src="@{popper.min.js}"></script>
-    <script th:src="@{bootstrap.min.js}"></script>
-    <script th:src="@{bootstrap.bundle.min.js}"></script>
-    <script th:src="@{helper.js}"></script>
+    <script th:src="@{Js/jquery.min.js}"></script>
+    <script th:src="@{Js/jquery.slim.min.js}"></script>
+    <script th:src="@{Js/popper.min.js}"></script>
+    <script th:src="@{Js/bootstrap.min.js}"></script>
+    <script th:src="@{Js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{Js/helper.js}"></script>
+</body>
+
+<body th:if="${login}!=null">
+    <div th:replace="Login :: login"></div>
 </body>
 
 </html>

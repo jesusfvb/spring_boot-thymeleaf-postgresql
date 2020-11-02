@@ -15,6 +15,8 @@ public interface UsersServises {
 
     Users findUserById(Integer id);
 
+    Users findUserByUseName(String userName);
+
     void saveUser(Users user);
 
     void updateUsers(Users user);

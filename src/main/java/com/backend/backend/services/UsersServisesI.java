@@ -8,6 +8,8 @@ import com.backend.backend.repositorys.Users;
 import com.backend.backend.repositorys.UsersI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +17,8 @@ public class UsersServisesI implements UsersServises {
 
     @Autowired
     private UsersI repository;
+
+    private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
     public List<Users> allUsers() {
@@ -42,7 +46,7 @@ public class UsersServisesI implements UsersServises {
         } else if (user.getId() != null) {
             throw new UserException("saveUser1");
         } else {
-            // Aqui va lo de encriptar la contraseña
+            user.setPassword(encoder.encode(user.getPassword()));
             user.addOrUpdateSerch();
             repository.save(user);
         }
@@ -56,7 +60,7 @@ public class UsersServisesI implements UsersServises {
             if (user.getPassword().length() == 0) {
                 user.setPassword(findUserById(user.getId()).getPassword());
             } else {
-                // Aqui va lo de encriptar la contraseña
+                user.setPassword(encoder.encode(user.getPassword()));
             }
             user.addOrUpdateSerch();
             repository.save(user);
@@ -66,5 +70,10 @@ public class UsersServisesI implements UsersServises {
     @Override
     public void deleteUsers(Integer[] ids) {
         repository.deleteAll(repository.findAllById(Arrays.asList(ids)));
+    }
+
+    @Override
+    public Users findUserByUseName(String userName) {
+        return repository.findByUserName(userName);
     }
 }
