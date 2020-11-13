@@ -20,7 +20,7 @@
             <th
               scope="col"
               class="st"
-              sec:authorize="!hasRole('ROLE_ESTUDIANTE')"
+              sec:authorize="!(hasRole('ROLE_ESTUDIANTE') or hasRole('ROLE_VICDECEXTENCION'))"
             >
               Modificar
             </th>
@@ -48,7 +48,7 @@
             <td th:text="${dato.integrante.name}"></td>
             <td th:text="${dato.integrante.solapin}"></td>
             <td th:text="${dato.evaluacion}"></td>
-            <td sec:authorize="!hasRole('ROLE_ESTUDIANTE')">
+            <td sec:authorize="!(hasRole('ROLE_ESTUDIANTE') or hasRole('ROLE_VICDECEXTENCION'))">
               <form th:action="@{/integrante/modificar}" method="POST">
                 <input type="hidden" name="id" th:value="${dato.id}" />
                 <button type="submit" class="btn btn-warning btn-sm">
