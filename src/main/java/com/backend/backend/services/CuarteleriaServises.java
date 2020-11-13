@@ -11,6 +11,8 @@ public interface CuarteleriaServises {
 
     List<Cuarteleria> allCuarteleria();
 
+    List<Cuarteleria> allCuarteleriaByUserName(String userName);
+
     List<Cuarteleria> searchCuarteleria(String text);
 
     Cuarteleria findCuarteleriaById(Integer id);

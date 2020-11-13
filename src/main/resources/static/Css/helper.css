@@ -1,11 +1,14 @@
-.st{
-    width: 10px;
+.st {
+  width: 10px;
 }
-.contenedorDeNotificaciones{
-    position: fixed;
-    bottom: 0%;
-    right: 1%;
+.contenedorDeNotificaciones {
+  position: fixed;
+  bottom: 0%;
+  right: 1%;
 }
-.puntero{
-    cursor: pointer;
+.puntero {
+  cursor: pointer;
+}
+.disabled-home {
+  background-color: black;
 }

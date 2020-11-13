@@ -1,46 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<body>
+  <body>
     <div class="col mt-3 border-top" th:fragment="marco">
-        <div class="row  ">
-            <div class="col-3 mt-2 border-right">
-                <div class="alert alert-secondary" role="alert">
-                    <div th:replace="${formulario} :: formulario"></div>
-                </div>
-            </div>
-            <div class="col mt-2">
-                <div class="row">
-                    <div class="col">
-                        <div class="input-group mb-3" th:if="${guardia}!=null" th:each=" g : ${guardia}">
-                            <input type="text" class="form-control"
-                                th:placeholder="${g.representante.name} +' | '+${g.fecha} +' | '+${g.inicio} +' | '+${g.fin} +' | '+${g.ubicacion}"
-                                disabled>
-                            <div class="input-group-append">
-                                <a href="/guardia" type="button" class="btn btn-primary" id="bfiltar">
-                                    <-- </a>
-                                        <button type="button" class="btn btn-danger" id="bobor">Borrar</button>
-                            </div>
-                        </div>
-                        <div class="input-group mb-3" th:if="${guardia}==null">
-                            <input type="text" class="form-control"
-                                placeholder="Filtrar (Precione Enter) Canseler Filtro Precione X" id="filtar"
-                                th:value="${buscar}" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" id="bfiltar">X</button>
-                                <button type="button" class="btn btn-danger" id="bobor">Borrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div th:replace="${tabla} :: tabla"></div>
-                    </div>
-                </div>
-            </div>
+      <div class="row">
+        <div
+          class="col-3 mt-2 border-right"
+          th:if="!(((${url}=='cuarteleria') and ${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')})
+              or ((${url}=='guardia') and ${#authorization.expression('hasRole(''ROLE_PROFESOR'')')})
+              or ((${url}=='ubicacion' or ${url}=='guardia' or ${url}=='integrante' or ${url}=='cuarteleria') and ${#authorization.expression('hasRole(''ROLE_ESTUDIANTE'')')}))"
+        >
+          <div class="alert alert-secondary" role="alert">
+            <div th:replace="${formulario} :: formulario"></div>
+          </div>
         </div>
+        <div class="col mt-2">
+          <div class="row">
+            <div class="col">
+              <div
+                class="input-group mb-3"
+                th:if="${guardia}!=null"
+                th:each=" g : ${guardia}"
+              >
+                <input
+                  type="text"
+                  class="form-control"
+                  th:placeholder="${g.representante.name} +' | '+${g.fecha} +' | '+${g.inicio} +' | '+${g.fin} +' | '+${g.ubicacion}"
+                  disabled
+                />
+                <div class="input-group-append">
+                  <a
+                    href="/guardia"
+                    type="button"
+                    class="btn btn-primary"
+                    id="bfiltar"
+                  >
+                    <---
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="bobor"
+                    th:if="!(((${url}=='integrante' or ${url}=='cuarteleria') and ${#authorization.expression('hasRole(''ROLE_PROFESOR'')')})
+                    or ((${url}=='integrante') and ${#authorization.expression('hasRole(''ROLE_ESTUDIANTE'')')}) )"
+                  >
+                    Borrar
+                  </button>
+                </div>
+              </div>
+              <div class="input-group mb-3" th:if="${guardia}==null">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Filtrar (Precione Enter) Canseler Filtro Precione X"
+                  id="filtar"
+                  th:value="${buscar}"
+                  aria-label="Recipient's username"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-primary" id="bfiltar">
+                    X
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="bobor"
+                    th:if="!(((${url}=='ubicacion' or ${url}=='cuarteleria') and ${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')})
+                          or ((${url}=='ubicacion' or ${url}=='guardia' or ${url}=='cuarteleria' ) and ${#authorization.expression('hasRole(''ROLE_ESTUDIANTE'')')}))"
+                  >
+                    Borrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div th:replace="${tabla} :: tabla"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

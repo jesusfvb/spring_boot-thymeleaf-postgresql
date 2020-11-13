@@ -76,4 +76,19 @@ public class UsersServisesI implements UsersServises {
     public Users findUserByUseName(String userName) {
         return repository.findByUserName(userName);
     }
+
+    @Override
+    public List<Users> allUsersEstudiantesNoUbicados() {
+        return repository.findAllUserEstudiantesNoUbicadosOrderByName();
+    }
+
+    @Override
+    public List<Users> allUsersProfesores() {
+        return repository.findAllUsersProfesor();
+    }
+
+    @Override
+    public List<Users> allUsersEstudiantes() {
+        return repository.findAllUsersEstudiantes();
+    }
 }

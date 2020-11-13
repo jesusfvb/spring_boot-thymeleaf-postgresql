@@ -1,64 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GRDE</title>
     <!-- CSS -->
-    <link rel="stylesheet" th:href="@{Css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{Css/bootstrap-grid.min.css}">
-    <link rel="stylesheet" th:href="@{Css/bootstrap-reboot.min.css}">
-    <link rel="stylesheet" th:href="@{Css/helper.css}">
-</head>
+    <link rel="stylesheet" th:href="@{Css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{Css/bootstrap-grid.min.css}" />
+    <link rel="stylesheet" th:href="@{Css/bootstrap-reboot.min.css}" />
+    <link rel="stylesheet" th:href="@{Css/helper.css}" />
+  </head>
 
-<body class="container-fluid" th:if="${login}==null">
+  <body class="container-fluid" th:if="${login}==null">
     <div class="row">
-        <div class="col pl-0 pr-0">
-            <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-                    aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" th:href="@{/home}">GDRE</a>
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li name="nav-item" class="nav-item ">
-                            <a class="nav-link" th:href="@{/home}">Home</a>
-                        </li>
-                        <li name="nav-item" class="nav-item ">
-                            <a class="nav-link" th:href="@{/cuarteleria}">Cuarteleria</a>
-                        </li>
-                        <li name="nav-item" class="nav-item ">
-                            <a class="nav-link" th:href="@{/guardia}">Guardia</a>
-                        </li>
-                        <li name="nav-item" class="nav-item ">
-                            <a class="nav-link" th:href="@{/ubicacion}">Ubicacion</a>
-                        </li>
-                        <li name="nav-item" class="nav-item ">
-                            <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
-                        </li>
-                    </ul>
-                    <div class="nav-item btn-group">
-                        <button type="button" class="btn btn-success">Nombre De Usuario</button>
-                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" th:href="@{/logout}">Desconectartse</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
+      <div class="col pl-0 pr-0">
+        <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarTogglerDemo03"
+            aria-controls="navbarTogglerDemo03"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" th:href="@{/home}">GDRE</a>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li name="nav-item" class="nav-item">
+                <a class="nav-link" th:href="@{/home}">Home</a>
+              </li>
+              <li name="nav-item" class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/cuarteleria}"
+                  th:classappend="${#authorization.expression('hasRole(''ROLE_DRRECIDENCE'')')} or ${#authorization.expression('hasRole(''ROLE_PROFESOR'')')}? ' disabled'"
+                  >Cuarteleria</a
+                >
+              </li>
+              <li name="nav-item" class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/guardia}"
+                  th:classappend="${#authorization.expression('hasRole(''ROLE_DRRECIDENCE'')')} or ${#authorization.expression('hasRole(''ROLE_INTRUCTURA'')')}? ' disabled'"
+                  >Guardia</a
+                >
+              </li>
+              <li name="nav-item" class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/ubicacion}"
+                  th:classappend="${#authorization.expression('hasRole(''ROLE_INTRUCTURA'')')} or ${#authorization.expression('hasRole(''ROLE_PROFESOR'')')}? ' disabled'"
+                  >Ubicacion
+                </a>
+              </li>
+              <li
+                name="nav-item"
+                class="nav-item"
+                sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+              >
+                <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+              </li>
+            </ul>
+            <div class="nav-item btn-group">
+              <button
+                type="button"
+                class="btn btn-success"
+                sec:authentication="name"
+              >
+                Nombre De Usuario
+              </button>
+              <a class="btn btn-light" th:href="@{/logout}"
+                ><span class="">Salir</span></a
+              >
+            </div>
+          </div>
+        </nav>
+      </div>
     </div>
     <div class="row">
-        <div th:replace="${ruta} ::${fragmento}"></div>
+      <div th:replace="${ruta} ::${fragmento}"></div>
     </div>
     <div class="contenedorDeNotificaciones" id="contenedorDeNotificaciones">
-        <i id="referencia" />
+      <i id="referencia" />
     </div>
+    <span sec:authentication="principal.authorities"
+      >[ROLE_USER, ROLE_ADMIN]</span
+    >
     <!-- JS -->
     <script th:src="@{Js/jquery.min.js}"></script>
     <script th:src="@{Js/jquery.slim.min.js}"></script>
@@ -66,10 +100,9 @@
     <script th:src="@{Js/bootstrap.min.js}"></script>
     <script th:src="@{Js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{Js/helper.js}"></script>
-</body>
+  </body>
 
-<body th:if="${login}!=null">
+  <body th:if="${login}!=null">
     <div th:replace="Login :: login"></div>
-</body>
-
+  </body>
 </html>

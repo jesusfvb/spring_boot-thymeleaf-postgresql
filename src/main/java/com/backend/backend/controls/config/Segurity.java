@@ -9,20 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Configuration
 @EnableWebSecurity
-@Controller
 public class Segurity extends WebSecurityConfigurerAdapter {
     String[] recursos = new String[] { "/Img/**", "/Css/**" };
 
     @Autowired
     private UserDetailsI userDetail;
 
-    @Bean()
+    @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -35,14 +31,7 @@ public class Segurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers(recursos).permitAll().anyRequest().authenticated().and().formLogin()
-                .loginPage("/login").permitAll().defaultSuccessUrl("/").failureUrl("/login?error=true")
-                .usernameParameter("u").passwordParameter("p").and().csrf().disable().logout().permitAll().logoutSuccessUrl("/login");
-    }
-
-    @GetMapping("/login")
-    private ModelAndView login() {
-        ModelAndView login = new ModelAndView("Index.html");
-        login.addObject("login", "");
-        return login;
+                .loginPage("/login").permitAll().defaultSuccessUrl("/").failureUrl("/login").usernameParameter("u")
+                .passwordParameter("p").and().csrf().disable().logout().permitAll().logoutSuccessUrl("/login");
     }
 }

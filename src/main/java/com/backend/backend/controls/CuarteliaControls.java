@@ -8,6 +8,7 @@ import com.backend.backend.services.CuarteleriaServises;
 import com.backend.backend.services.UbicacionServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,8 +36,16 @@ public class CuarteliaControls {
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
-            atributes.put("datos", servises.allCuarteleria());
-            atributes.put("datosU", uServises.allUbicacion());
+            String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0]
+                    .toString();
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (rol.equals("ROLE_ESTUDIANTE")) {
+                atributes.put("datos", servises.allCuarteleriaByUserName(username));
+            } else {
+                atributes.put("datos", servises.allCuarteleria());
+            }
+            atributes.put("url", "cuarteleria");
+            atributes.put("datosU", uServises.allUbicacionEstudiante());
             atributes.put("buscar", "");
             atributes.put("dataForm", new Cuarteleria());
             atributes.put("modificar", false);

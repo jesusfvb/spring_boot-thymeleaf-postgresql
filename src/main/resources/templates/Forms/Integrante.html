@@ -1,59 +1,119 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<body>
+  <body>
     <div th:fragment="formulario">
-        <div class="container p-0 m-0">
-            <div class="row">
-                <div class="col">
-                    <h4>
-                        <span th:if="${modificar}==false">Añadir</span>
-                        <span id="modificar" th:if="${modificar}==true">Modificar</span> Guardia
-                    </h4>
-                </div>
-                <div class="col-3">
-                    <button id="bbor" type="button" class="btn btn-danger btn-sm mt-1">Borrar</button>
-                </div>
-            </div>
+      <div class="container p-0 m-0">
+        <div class="row">
+          <div class="col">
+            <h4>
+              <span th:if="${modificar}==false">Añadir</span>
+              <span id="modificar" th:if="${modificar}==true">Modificar</span>
+              Integrante
+            </h4>
+          </div>
+          <div class="col-3">
+            <button id="bbor" type="button" class="btn btn-danger btn-sm mt-1">
+              Borrar
+            </button>
+          </div>
         </div>
-        <form id="form" th:action="@{/integrante}" th:object="${dataForm}" method="POST" autocomplete="off">
-            <input type="number" class="d-none" th:field="*{id}">
-            <input type="number" class="d-none" th:field="*{integrante.id}" id="userId">
-            <div class="form-group dropdown">
-                <label>Nombre Integrante</label>
-                <input type="text" class="form-control dropdown-toggle" placeholder="Entre el Nombre"
-                    th:value="${dataForm.integrante.name}" data-toggle="dropdown"
-                    th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " id="nombre">
-                <div class="dropdown-menu">
-                    <a name="sugerenciaId" class="dropdown-item puntero" th:each=" u : ${datosU}" th:text="${u.name}"
-                        th:id=${u.id}></a>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Evaluación</label>
-                <select class="form-control custom-select is-valid" th:field="*{evaluacion}" id="evaluacion">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Bien">Bien</option>
-                    <option value="Regular">Regular</option>
-                    <option value="Mal">Mal</option>
-                </select>
-            </div>
-            <div class="text-right">
-                <a th:if="${modificar}==true" th:href="@{/integrante}" type="button"
-                    class="btn btn-danger active">Canselar</a>
-                <button type="submit" class="btn btn-primary ">Aceptar</button>
-            </div>
-        </form>
-        <form id="form" th:action="@{/integrante/advertencia}" method="POST" autocomplete="off">
-            <div class="form-group">
-                <label>Adbertencia</label>
-                <textarea th:each=" g : ${guardia}"  th:text="${g.advertencia}" name="advertencia" th class="form-control" rows="5"></textarea>
-            </div>
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary ">Aceptar</button>
-            </div>
-        </form>
+      </div>
+      <form
+        id="form"
+        th:action="@{/integrante}"
+        th:object="${dataForm}"
+        method="POST"
+        autocomplete="off"
+      >
+        <input type="number" class="d-none" th:field="*{id}" />
+        <input
+          type="number"
+          class="d-none"
+          th:field="*{integrante.id}"
+          id="userId"
+        />
+        <div class="form-group dropdown">
+          <label>Nombre Integrante</label>
+          <input
+            type="text"
+            class="form-control dropdown-toggle"
+            placeholder="Entre el Nombre"
+            th:value="${dataForm.integrante.name}"
+            data-toggle="dropdown"
+            th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+            id="nombre"
+            th:disabled="${#authorization.expression('hasRole(''ROLE_PROFESOR'')')}"
+          />
+          <div class="dropdown-menu">
+            <a
+              name="sugerenciaId"
+              class="dropdown-item puntero"
+              th:each=" u : ${datosU}"
+              th:text="${u.name}"
+              th:id="${u.id}"
+            ></a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Evaluación</label>
+          <select
+            class="form-control custom-select is-valid"
+            th:field="*{evaluacion}"
+            id="evaluacion"
+            th:disabled="(${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')} 
+                      or (${#authorization.expression('hasRole(''ROLE_PROFESOR'')')} and !${modificar} ))"
+          >
+            <option value="Pendiente">Pendiente</option>
+            <option value="Bien">Bien</option>
+            <option value="Regular">Regular</option>
+            <option value="Mal">Mal</option>
+          </select>
+        </div>
+        <div class="text-right">
+          <a
+            th:if="${modificar}==true"
+            th:href="@{/integrante}"
+            type="button"
+            class="btn btn-danger active"
+            >Canselar</a
+          >
+          <button
+            type="submit"
+            class="btn btn-primary"
+            th:disabled="${#authorization.expression('hasRole(''ROLE_PROFESOR'')')} and !${modificar}"
+          >
+            Aceptar
+          </button>
+        </div>
+      </form>
+      <form
+        id="form"
+        th:action="@{/integrante/advertencia}"
+        method="POST"
+        autocomplete="off"
+      >
+        <div class="form-group">
+          <label>Adbertencia</label>
+          <textarea
+            th:each=" g : ${guardia}"
+            th:text="${g.advertencia}"
+            name="advertencia"
+            th
+            class="form-control"
+            rows="5"
+            th:disabled="${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')}"
+          ></textarea>
+        </div>
+        <div class="text-right">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            th:disabled="${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')}"
+          >
+            Aceptar
+          </button>
+        </div>
+      </form>
     </div>
-</body>
-
+  </body>
 </html>

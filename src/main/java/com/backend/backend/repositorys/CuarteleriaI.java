@@ -7,10 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CuarteleriaI extends JpaRepository<Cuarteleria,Integer> {
+public interface CuarteleriaI extends JpaRepository<Cuarteleria, Integer> {
 
     @Query("select c from Cuarteleria c order by c.ubicacion.user.name")
     List<Cuarteleria> findAllOrderByCuarteleriaUserName();
+
+    @Query("select c from Cuarteleria c where c.ubicacion.user.userName=?1")
+    List<Cuarteleria> findAllByUserName(String userName);
 
     @Query("select c from Cuarteleria c where c.seach like %?1% order by c.ubicacion.user.name")
     List<Cuarteleria> seachAll(String text);

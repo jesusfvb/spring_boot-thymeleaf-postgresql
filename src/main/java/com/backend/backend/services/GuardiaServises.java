@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 public interface GuardiaServises {
 
     List<Guardia> allGuardia();
+    
+    List<Guardia> allGuardiaByUserName(String userName);
+
+    List<Guardia> allGuardiaByIntegranteUserName(String userName);
 
     List<Integrante> allIntegrantes(Integer idG);
 

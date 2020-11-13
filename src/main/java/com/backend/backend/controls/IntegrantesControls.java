@@ -34,10 +34,11 @@ public class IntegrantesControls {
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
+            atributes.put("url", "integrante");
             atributes.put("id", 1);
             atributes.put("datos", servises.allIntegrantes((Integer) atributes.get("id")));
             atributes.put("guardia", servises.findGuardiaById((Integer) atributes.get("id")));
-            atributes.put("datosU", uServises.allUsers());
+            atributes.put("datosU", uServises.allUsersEstudiantes());
             atributes.put("buscar", "");
             atributes.put("dataForm", new Integrante());
             atributes.put("modificar", false);
@@ -81,7 +82,8 @@ public class IntegrantesControls {
 
     @PostMapping("/advertencia")
     private String advertencia(@RequestParam("advertencia") String advertencia) {
-        servises.updateAdvertencia((Integer) atributes.get("id"), advertencia);;
+        servises.updateAdvertencia((Integer) atributes.get("id"), advertencia);
+        ;
         return "redirect:/integrante";
     }
 

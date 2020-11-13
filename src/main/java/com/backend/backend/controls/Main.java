@@ -14,4 +14,11 @@ public class Main {
         index.addObject("fragmento", "home");
         return index;
     }
+
+    @GetMapping("/login")
+    private ModelAndView login() {
+        ModelAndView login = new ModelAndView("Index.html");
+        login.addObject("login", "");
+        return login;
+    }
 }

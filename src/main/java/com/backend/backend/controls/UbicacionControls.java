@@ -8,6 +8,7 @@ import com.backend.backend.services.UbicacionServises;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,20 +32,26 @@ public class UbicacionControls {
 
     @GetMapping()
     private ModelAndView list() {
-        if (redirect) {
-            this.redirect = false;
-            return new ModelAndView("Index.html", atributes);
+        String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
+        if (rol.equals("ROLE_ADMINISTRADOR") || rol.equals("ROLE_DRRECIDENCE") || rol.equals("ROLE_VICDECEXTENCION") || rol.equals("ROLE_ESTUDIANTE")) {
+            if (redirect) {
+                this.redirect = false;
+                return new ModelAndView("Index.html", atributes);
+            } else {
+                atributes.put("url","ubicacion");
+                atributes.put("datos", servises.allUbicacion());
+                atributes.put("datosUsers", uServises.allUsersEstudiantesNoUbicados());
+                atributes.put("buscar", "");
+                atributes.put("dataForm", new Ubicacion());
+                atributes.put("modificar", false);
+                atributes.put("ruta", "Marco");
+                atributes.put("fragmento", "marco");
+                atributes.put("formulario", "Forms/Ubicacion.html");
+                atributes.put("tabla", "Tablas/Ubicacion.html");
+                return new ModelAndView("Index.html", atributes);
+            }
         } else {
-            atributes.put("datos", servises.allUbicacion());
-            atributes.put("datosUsers", uServises.allUsers());
-            atributes.put("buscar", "");
-            atributes.put("dataForm", new Ubicacion());
-            atributes.put("modificar", false);
-            atributes.put("ruta", "Marco");
-            atributes.put("fragmento", "marco");
-            atributes.put("formulario", "Forms/Ubicacion.html");
-            atributes.put("tabla", "Tablas/Ubicacion.html");
-            return new ModelAndView("Index.html", atributes);
+            return null;
         }
     }
 

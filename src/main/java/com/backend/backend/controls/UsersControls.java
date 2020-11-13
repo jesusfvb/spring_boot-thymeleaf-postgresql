@@ -7,6 +7,7 @@ import com.backend.backend.repositorys.Users;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,20 +23,25 @@ public class UsersControls {
     private UsersServises servises;
 
     @GetMapping()
-    private ModelAndView listar() {
-        if (redirect) {
-            this.redirect = false;
-            return new ModelAndView("Index.html", atributes);
+    private ModelAndView listar() throws Exception {
+        String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
+        if (rol.equals("ROLE_ADMINISTRADOR")) {
+            if (redirect) {
+                this.redirect = false;
+                return new ModelAndView("Index.html", atributes);
+            } else {
+                atributes.put("users", servises.allUsers());
+                atributes.put("buscar", "");
+                atributes.put("userForm", new Users());
+                atributes.put("modificar", false);
+                atributes.put("ruta", "Marco");
+                atributes.put("fragmento", "marco");
+                atributes.put("formulario", "Forms/Usuario.html");
+                atributes.put("tabla", "Tablas/Usuario.html");
+                return new ModelAndView("Index.html", atributes);
+            }
         } else {
-            atributes.put("users", servises.allUsers());
-            atributes.put("buscar", "");
-            atributes.put("userForm", new Users());
-            atributes.put("modificar", false);
-            atributes.put("ruta", "Marco");
-            atributes.put("fragmento", "marco");
-            atributes.put("formulario", "Forms/Usuario.html");
-            atributes.put("tabla", "Tablas/Usuario.html");
-            return new ModelAndView("Index.html", atributes);
+            return null;
         }
     }
 

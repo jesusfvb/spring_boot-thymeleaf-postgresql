@@ -23,14 +23,14 @@ public class UserDetailsI implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String arg0) throws UsernameNotFoundException {
-        if (arg0.equals("jesusfvbAdmin")) {
+        if (arg0.equals("admin")) {
             List<GrantedAuthority> role = new LinkedList<>();
-            role.add(new SimpleGrantedAuthority("Administrador"));
-            return new User(arg0, new BCryptPasswordEncoder().encode("75jess58"), role);
+            role.add(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"));
+            return new User(arg0, new BCryptPasswordEncoder().encode("1234"), role);
         } else {
             Users privote = service.findUserByUseName(arg0);
             List<GrantedAuthority> role = new LinkedList<>();
-            role.add(new SimpleGrantedAuthority(privote.getRol().name()));
+            role.add(new SimpleGrantedAuthority(("ROLE_"+privote.getRol().name()).toUpperCase()));
             return new User(privote.getUserName(), privote.getPassword(), role);
         }
     }

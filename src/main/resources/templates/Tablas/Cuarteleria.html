@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<body>
+  <body>
     <div th:fragment="tabla" class="table-responsive">
-        <table class="table table-sm table-hover">
-            <thead>
-                <tr>
-                    <th scope="col" class="st"><button id="bst" type="button" class="btn btn-dark btn-sm">ST</button>
-                    </th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Solapin</th>
-                    <th scope="col">Apartamento</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Evaluacion</th>
-                    <th scope="col" class="st">Modificar</th>
-                    <th scope="col" class="st">Borrar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each=" dato : ${datos}">
-                    <th>
-                        <input th:id="${dato.id}" class="stc ml-2" type="checkbox" name="cbst">
-                    </th>
-                    <td th:text="${dato.ubicacion.user.name}"></td>
-                    <td th:text="${dato.ubicacion.user.solapin}"></td>
-                    <td th:text="${dato.ubicacion.apartamento}"></td>
-                    <td th:text="${dato.fecha}"></td>
-                    <td th:text="${dato.evaluacion}"></td>
-                    <td>
-                        <form th:action="@{/cuarteleria/modificar}" method="POST">
-                            <input type="hidden" name="id" th:value="${dato.id}">
-                            <button type="submit" class="btn btn-warning btn-sm">Modificar</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form th:action="@{/cuarteleria/delete}" method="POST">
-                            <input type="hidden" name="ids" th:value="${dato.id}">
-                            <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              class="st"
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              <button id="bst" type="button" class="btn btn-dark btn-sm">
+                ST
+              </button>
+            </th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Solapin</th>
+            <th scope="col">Apartamento</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Evaluacion</th>
+            <th
+              scope="col"
+              class="st"
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              Modificar
+            </th>
+            <th
+              scope="col"
+              class="st"
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              Borrar
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each=" dato : ${datos}">
+            <th
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              <input
+                th:id="${dato.id}"
+                class="stc ml-2"
+                type="checkbox"
+                name="cbst"
+              />
+            </th>
+            <td th:text="${dato.ubicacion.user.name}"></td>
+            <td th:text="${dato.ubicacion.user.solapin}"></td>
+            <td th:text="${dato.ubicacion.apartamento}"></td>
+            <td th:text="${dato.fecha}"></td>
+            <td th:text="${dato.evaluacion}"></td>
+            <td
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              <form th:action="@{/cuarteleria/modificar}" method="POST">
+                <input type="hidden" name="id" th:value="${dato.id}" />
+                <button type="submit" class="btn btn-warning btn-sm">
+                  Modificar
+                </button>
+              </form>
+            </td>
+            <td
+              sec:authorize="!(hasRole('ROLE_VICDECEXTENCION') or hasRole('ROLE_ESTUDIANTE'))"
+            >
+              <form th:action="@{/cuarteleria/delete}" method="POST">
+                <input type="hidden" name="ids" th:value="${dato.id}" />
+                <button type="submit" class="btn btn-danger btn-sm">
+                  Borrar
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-</body>
-
+  </body>
 </html>

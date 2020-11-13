@@ -8,6 +8,7 @@ import com.backend.backend.services.GuardiaServises;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,12 +31,21 @@ public class GuardiaControls {
 
     @GetMapping()
     private ModelAndView list() {
+        String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
         if (redirect) {
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
-            atributes.put("datos", servises.allGuardia());
-            atributes.put("datosU", uServises.allUsers());
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            atributes.put("url", "guardia");
+            if (rol.equals("ROLE_PROFESOR")) {
+                atributes.put("datos", servises.allGuardiaByUserName(username));
+            } else if (rol.equals("ROLE_ESTUDIANTE")) {
+                atributes.put("datos", servises.allGuardiaByIntegranteUserName(username));
+            } else {
+                atributes.put("datos", servises.allGuardia());
+            }
+            atributes.put("datosU", uServises.allUsersProfesores());
             atributes.put("buscar", "");
             atributes.put("dataForm", new Guardia());
             atributes.put("modificar", false);

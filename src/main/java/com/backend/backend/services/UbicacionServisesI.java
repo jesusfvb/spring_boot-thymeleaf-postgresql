@@ -74,4 +74,9 @@ public class UbicacionServisesI implements UbicacionServises {
             repository.deleteAll(repository.findAllById(Arrays.asList(ids)));
         }
     }
+
+    @Override
+    public List<Ubicacion> allUbicacionEstudiante() {
+        return repository.findAllUbicacionEstudiantes();
+    }
 }

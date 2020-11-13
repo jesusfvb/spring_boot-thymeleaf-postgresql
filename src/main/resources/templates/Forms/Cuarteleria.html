@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div th:fragment="formulario">
+    <div th:fragment="formulario" sec:authorize="!hasRole('ROLE_VICDECEXTENCION')">
         <div class="container p-0 m-0">
             <div class="row">
                 <div class="col">

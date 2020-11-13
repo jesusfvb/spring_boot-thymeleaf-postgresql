@@ -119,4 +119,14 @@ public class GuardiaServisesI implements GuardiaServises {
             repository.save(g);
         }
     }
+
+    @Override
+    public List<Guardia> allGuardiaByUserName(String userName) {
+        return repository.findAllByUseName(userName);
+    }
+
+    @Override
+    public List<Guardia> allGuardiaByIntegranteUserName(String userName) {
+        return repository.findAllByIntegranteUseName(userName);
+    }
 }
