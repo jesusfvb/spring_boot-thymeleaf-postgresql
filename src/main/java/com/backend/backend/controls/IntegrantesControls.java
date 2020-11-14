@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.backend.backend.repositorys.Integrante;
+import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.services.GuardiaServises;
+import com.backend.backend.services.NotificacionServises;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,12 +31,26 @@ public class IntegrantesControls {
     @Autowired
     private UsersServises uServises;
 
+    @Autowired
+    private NotificacionServises notificacionServises;
+
     @GetMapping()
     private ModelAndView list() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (redirect) {
+            if ((Boolean) atributes.get("estado")) {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            } else {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByRemitente(username));
+            }
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
+            atributes.put("estado", true);
+            atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            atributes.put("activo", false);
+            atributes.put("notificacion", new Notificaciones());
+            atributes.put("datosN", uServises.allUsers());
             atributes.put("url", "integrante");
             atributes.put("id", 1);
             atributes.put("datos", servises.allIntegrantes((Integer) atributes.get("id")));
@@ -83,8 +100,30 @@ public class IntegrantesControls {
     @PostMapping("/advertencia")
     private String advertencia(@RequestParam("advertencia") String advertencia) {
         servises.updateAdvertencia((Integer) atributes.get("id"), advertencia);
-        ;
         return "redirect:/integrante";
     }
 
+    @PostMapping("/notificacion")
+    private String addNotificacion(@ModelAttribute("notificacion") Notificaciones notificacion) {
+        notificacionServises.saveNotificacion(notificacion);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/integrante";
+    }
+
+    @PostMapping("/notificacion/delete")
+    private String deleteNotificacion(@RequestParam("ids") Integer ids[]) {
+        notificacionServises.deleteNotificacion(ids);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/integrante";
+    }
+
+    @PostMapping("/notificacion/estado")
+    private String estadoNotificacion(@RequestParam("estado") Boolean estado) {
+        atributes.replace("estado", estado);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/integrante";
+    }
 }

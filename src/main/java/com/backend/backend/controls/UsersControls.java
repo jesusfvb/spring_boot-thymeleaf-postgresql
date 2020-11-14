@@ -3,7 +3,9 @@ package com.backend.backend.controls;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.repositorys.Users;
+import com.backend.backend.services.NotificacionServises;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +22,31 @@ public class UsersControls {
     private Boolean redirect = false;
 
     @Autowired
+    private NotificacionServises notificacionServises;
+
+    @Autowired
     private UsersServises servises;
 
     @GetMapping()
     private ModelAndView listar() throws Exception {
         String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (rol.equals("ROLE_ADMINISTRADOR")) {
             if (redirect) {
+                if ((Boolean) atributes.get("estado")) {
+                    atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+                } else {
+                    atributes.put("notificaciones", notificacionServises.allNotificacionesByRemitente(username));
+                }
                 this.redirect = false;
                 return new ModelAndView("Index.html", atributes);
             } else {
+                atributes.put("estado", true);
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+                atributes.put("activo", false);
+                atributes.put("notificacion", new Notificaciones());
+                atributes.put("datosN", servises.allUsers());
+                atributes.put("url", "usuarios");
                 atributes.put("users", servises.allUsers());
                 atributes.put("buscar", "");
                 atributes.put("userForm", new Users());
@@ -78,6 +95,30 @@ public class UsersControls {
             atributes.replace("users", servises.searchUsers(text));
         }
         atributes.replace("buscar", text);
+        return "redirect:/usuarios";
+    }
+
+    @PostMapping("/notificacion")
+    private String addNotificacion(@ModelAttribute("notificacion") Notificaciones notificacion) {
+        notificacionServises.saveNotificacion(notificacion);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/usuarios";
+    }
+
+    @PostMapping("/notificacion/delete")
+    private String deleteNotificacion(@RequestParam("ids") Integer ids[]) {
+        notificacionServises.deleteNotificacion(ids);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/usuarios";
+    }
+
+    @PostMapping("/notificacion/estado")
+    private String estadoNotificacion(@RequestParam("estado") Boolean estado) {
+        atributes.replace("estado", estado);
+        this.redirect = true;
+        atributes.replace("activo", true);
         return "redirect:/usuarios";
     }
 }

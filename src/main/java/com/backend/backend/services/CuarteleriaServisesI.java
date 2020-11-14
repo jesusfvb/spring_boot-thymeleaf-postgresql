@@ -3,7 +3,6 @@ package com.backend.backend.services;
 import java.util.Arrays;
 import java.util.List;
 
-import com.backend.backend.controls.exceptions.CuarteleriaException;
 import com.backend.backend.repositorys.Cuarteleria;
 import com.backend.backend.repositorys.CuarteleriaI;
 
@@ -26,7 +25,7 @@ public class CuarteleriaServisesI implements CuarteleriaServises {
     @Override
     public List<Cuarteleria> searchCuarteleria(String text) {
         if(text==null||text.length()==0){
-            throw new CuarteleriaException("Balor invalido para realizar la Busqueda");
+            throw new RuntimeException("Balor invalido para realizar la Busqueda");
         }
         else{
             return repository.seachAll(text);
@@ -36,7 +35,7 @@ public class CuarteleriaServisesI implements CuarteleriaServises {
     @Override
     public Cuarteleria findCuarteleriaById(Integer id) {
         if (id == null || id < 0) {
-            throw new CuarteleriaException("Balor invalido");
+            throw new RuntimeException("Balor invalido");
         } else {
             return repository.findById(id).get();
         }
@@ -45,7 +44,7 @@ public class CuarteleriaServisesI implements CuarteleriaServises {
     @Override
     public void saveCuarteleria(Cuarteleria cuarteleria) {
         if(cuarteleria==null||cuarteleria.getId()!=null){
-            throw new CuarteleriaException("Datos invalido para añadir");
+            throw new RuntimeException("Datos invalido para añadir");
         }
         else{
             cuarteleria.setUbicacion(service.findUbicacionById(cuarteleria.getUbicacion().getId()));
@@ -57,7 +56,7 @@ public class CuarteleriaServisesI implements CuarteleriaServises {
     @Override
     public void updateCuarteleria(Cuarteleria cuarteleria) {
         if(cuarteleria==null||cuarteleria.getId()==null){
-            throw new CuarteleriaException("Datos invalido para Modificar");
+            throw new RuntimeException("Datos invalido para Modificar");
         }
         else{
             cuarteleria.setUbicacion(service.findUbicacionById(cuarteleria.getUbicacion().getId()));
@@ -69,7 +68,7 @@ public class CuarteleriaServisesI implements CuarteleriaServises {
     @Override
     public void deleteCuarteleria(Integer[] ids) {
         if(ids==null|| ids.length==0){
-            throw new CuarteleriaException("Balor Incorrecto para Borrar");
+            throw new RuntimeException("Balor Incorrecto para Borrar");
         }
         else{
             repository.deleteAll(repository.findAllById(Arrays.asList(ids)));

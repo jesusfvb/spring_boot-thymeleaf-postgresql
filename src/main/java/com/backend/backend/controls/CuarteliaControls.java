@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.backend.backend.repositorys.Cuarteleria;
+import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.services.CuarteleriaServises;
+import com.backend.backend.services.NotificacionServises;
 import com.backend.backend.services.UbicacionServises;
+import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,20 +33,36 @@ public class CuarteliaControls {
     @Autowired
     private UbicacionServises uServises;
 
+    @Autowired
+    private NotificacionServises notificacionServises;
+
+    @Autowired
+    private UsersServises userSer;
+
     @GetMapping()
     private ModelAndView list() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (redirect) {
+            if ((Boolean) atributes.get("estado")) {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            } else {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByRemitente(username));
+            }
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
             String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0]
                     .toString();
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             if (rol.equals("ROLE_ESTUDIANTE")) {
                 atributes.put("datos", servises.allCuarteleriaByUserName(username));
             } else {
                 atributes.put("datos", servises.allCuarteleria());
             }
+            atributes.put("estado", true);
+            atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            atributes.put("activo", false);
+            atributes.put("notificacion", new Notificaciones());
+            atributes.put("datosN", userSer.allUsers());
             atributes.put("url", "cuarteleria");
             atributes.put("datosU", uServises.allUbicacionEstudiante());
             atributes.put("buscar", "");
@@ -91,6 +110,30 @@ public class CuarteliaControls {
             atributes.replace("datos", servises.searchCuarteleria(text));
         }
         atributes.replace("buscar", text);
+        return "redirect:/cuarteleria";
+    }
+
+    @PostMapping("/notificacion")
+    private String addNotificacion(@ModelAttribute("notificacion") Notificaciones notificacion) {
+        notificacionServises.saveNotificacion(notificacion);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/cuarteleria";
+    }
+
+    @PostMapping("/notificacion/delete")
+    private String deleteNotificacion(@RequestParam("ids") Integer ids[]) {
+        notificacionServises.deleteNotificacion(ids);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/cuarteleria";
+    }
+
+    @PostMapping("/notificacion/estado")
+    private String estadoNotificacion(@RequestParam("estado") Boolean estado) {
+        atributes.replace("estado", estado);
+        this.redirect = true;
+        atributes.replace("activo", true);
         return "redirect:/cuarteleria";
     }
 }

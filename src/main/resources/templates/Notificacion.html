@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div class="modal-content" th:fragment="notificacion">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Notificaciones</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-4">
+            <div class="alert alert-secondary" role="alert">
+              <div class="row">
+                <div class="col"><h4>Nueva Notificacion</h4></div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div
+                    th:replace=" Forms/Notificacion.html :: formulario"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col mb-3">
+                <ul class="nav nav-tabs">
+                  <li class="nav-item">
+                    <a
+                      class="nav-link puntero"
+                      name="notiActive"
+                      data-active="true"
+                      th:classappend=" ${estado}? ' active' : '' "
+                      >Recibidas</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link puntero"
+                      name="notiActive"
+                      data-active="false"
+                      th:classappend=" ${estado}? '' : ' active' "
+                      >Enviadas</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div th:replace=" Tablas/Notificacion.html :: tabla"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Salir
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

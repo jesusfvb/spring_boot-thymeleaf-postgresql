@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div class="table-responsive" th:fragment="tabla">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Mensaje</th>
+            <th scope="col" class="st">Borrar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each=" noti : ${notificaciones}">
+            <td
+              th:text="(${estado})? ${noti.nombreRemitente} :${noti.nombreDestinatario}"
+            >
+              Nombre
+            </td>
+            <td th:text="${noti.mensaje}">Mensaje</td>
+            <td>
+              <form th:action="'/'+${url}+'/notificacion/delete'" method="POST">
+                <input type="hidden" name="ids" th:value="${noti.id}" />
+                <button type="submit" class="btn btn-danger btn-sm">
+                  Borrar
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

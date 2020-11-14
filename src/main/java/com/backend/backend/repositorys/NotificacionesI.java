@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificacionesI extends JpaRepository<Notificaciones, Integer> {
-    
-    @Query("select n from Notificaciones n where n.remitente.id = ?1")
-    List<Notificaciones> findAllByRemitenteID(Integer id);
-   
-    @Query("select n from Notificaciones n where n.destinatario.id = ?1")
-    List<Notificaciones> findAllByDestinatarioID(Integer id);
+
+    @Query("select n from Notificaciones n where n.remitente.userName = ?1")
+    List<Notificaciones> findAllByRemitenteUserName(String userName);
+
+    @Query("select n from Notificaciones n where n.destinatario.userName = ?1")
+    List<Notificaciones> findAllByDestinatarioUserName(String userName);
 
 }

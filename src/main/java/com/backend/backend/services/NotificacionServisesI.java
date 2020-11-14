@@ -3,11 +3,11 @@ package com.backend.backend.services;
 import java.util.Arrays;
 import java.util.List;
 
-import com.backend.backend.controls.exceptions.NotificacionException;
 import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.repositorys.NotificacionesI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,29 +16,37 @@ public class NotificacionServisesI implements NotificacionServises {
     @Autowired
     private NotificacionesI repository;
 
+    @Autowired
+    private UsersServises service;
+
     @Override
-    public List<Notificaciones> allNotificacionesByRemitente(Integer id) {
-        if (id == null || id < 0) {
-            throw new NotificacionException("Dato incorrecto");
+    public List<Notificaciones> allNotificacionesByRemitente(String userName) {
+        if (userName == null) {
+            throw new RuntimeException("Dato incorrecto");
         } else {
-            return repository.findAllByRemitenteID(id);
+            return repository.findAllByRemitenteUserName(userName);
         }
     }
 
     @Override
-    public List<Notificaciones> allNotificacionesByDestinatario(Integer id) {
-        if (id == null || id < 0) {
-            throw new NotificacionException("Dato incorrecto");
+    public List<Notificaciones> allNotificacionesByDestinatario(String userName) {
+        if (userName == null) {
+            throw new RuntimeException("Dato incorrecto");
         } else {
-            return repository.findAllByDestinatarioID(id);
+            return repository.findAllByDestinatarioUserName(userName);
         }
     }
 
     @Override
     public void saveNotificacion(Notificaciones notificacion) {
         if (notificacion.getId() != null) {
-            throw new NotificacionException("Dato incorrecto para Guardar");
+            throw new RuntimeException("Dato incorrecto para Guardar");
         } else {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            notificacion.setDestinatario(service.findUserById(notificacion.getDestinatario().getId()));
+            notificacion.setRemitente(service.findUserByUseName(username));
+            notificacion.setNombreDestinatario(notificacion.getDestinatario().getName());
+            notificacion.setNombreRemitente(notificacion.getRemitente().getName());
             repository.save(notificacion);
         }
     }
@@ -46,19 +54,21 @@ public class NotificacionServisesI implements NotificacionServises {
     @Override
     public void updateNotificacion(Notificaciones notificacion) {
         if (notificacion.getId() == null) {
-            throw new NotificacionException("Dato incorrecto para Modificar");
+            throw new RuntimeException("Dato incorrecto para Modificar");
         } else {
             repository.save(notificacion);
         }
     }
 
     @Override
-    public void deleteNotificacion(Integer idNs[], Integer id) {
+    public void deleteNotificacion(Integer idNs[]) {
 
-        if (idNs == null || idNs.length < 0 || id == null || id < 0) {
-            throw new NotificacionException("Error al Eliminar");
+        if (idNs == null || idNs.length < 0) {
+            throw new RuntimeException("Error al Eliminar");
         } else {
             List<Notificaciones> lista = repository.findAllById(Arrays.asList(idNs));
+            Integer id = service.findUserByUseName(SecurityContextHolder.getContext().getAuthentication().getName())
+                    .getId();
             lista.forEach(pivote -> {
                 Boolean modificado = false;
                 if (pivote.getRemitente() != null) {

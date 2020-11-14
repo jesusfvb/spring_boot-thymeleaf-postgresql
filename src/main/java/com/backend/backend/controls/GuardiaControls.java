@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.backend.backend.repositorys.Guardia;
+import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.services.GuardiaServises;
+import com.backend.backend.services.NotificacionServises;
 import com.backend.backend.services.UsersServises;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,22 @@ public class GuardiaControls {
 
     @Autowired
     private UsersServises uServises;
+    @Autowired
+    private NotificacionServises notificacionServises;
 
     @GetMapping()
     private ModelAndView list() {
         String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (redirect) {
+            if ((Boolean) atributes.get("estado")) {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            } else {
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByRemitente(username));
+            }
             this.redirect = false;
             return new ModelAndView("Index.html", atributes);
         } else {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             atributes.put("url", "guardia");
             if (rol.equals("ROLE_PROFESOR")) {
                 atributes.put("datos", servises.allGuardiaByUserName(username));
@@ -45,6 +54,11 @@ public class GuardiaControls {
             } else {
                 atributes.put("datos", servises.allGuardia());
             }
+            atributes.put("activo", false);
+            atributes.put("estado", true);
+            atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+            atributes.put("notificacion", new Notificaciones());
+            atributes.put("datosN", uServises.allUsers());
             atributes.put("datosU", uServises.allUsersProfesores());
             atributes.put("buscar", "");
             atributes.put("dataForm", new Guardia());
@@ -91,6 +105,30 @@ public class GuardiaControls {
             atributes.replace("datos", servises.searchGuardia(text));
         }
         atributes.replace("buscar", text);
+        return "redirect:/guardia";
+    }
+
+    @PostMapping("/notificacion")
+    private String addNotificacion(@ModelAttribute("notificacion") Notificaciones notificacion) {
+        notificacionServises.saveNotificacion(notificacion);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/guardia";
+    }
+
+    @PostMapping("/notificacion/delete")
+    private String deleteNotificacion(@RequestParam("ids") Integer ids[]) {
+        notificacionServises.deleteNotificacion(ids);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/guardia";
+    }
+
+    @PostMapping("/notificacion/estado")
+    private String estadoNotificacion(@RequestParam("estado") Boolean estado) {
+        atributes.replace("estado", estado);
+        this.redirect = true;
+        atributes.replace("activo", true);
         return "redirect:/guardia";
     }
 }

@@ -3,7 +3,9 @@ package com.backend.backend.controls;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.backend.backend.repositorys.Notificaciones;
 import com.backend.backend.repositorys.Ubicacion;
+import com.backend.backend.services.NotificacionServises;
 import com.backend.backend.services.UbicacionServises;
 import com.backend.backend.services.UsersServises;
 
@@ -30,17 +32,32 @@ public class UbicacionControls {
     @Autowired
     private UsersServises uServises;
 
+    @Autowired
+    private NotificacionServises notificacionServises;
+
     @GetMapping()
     private ModelAndView list() {
         String rol = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString();
-        if (rol.equals("ROLE_ADMINISTRADOR") || rol.equals("ROLE_DRRECIDENCE") || rol.equals("ROLE_VICDECEXTENCION") || rol.equals("ROLE_ESTUDIANTE")) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (rol.equals("ROLE_ADMINISTRADOR") || rol.equals("ROLE_DRRECIDENCE") || rol.equals("ROLE_VICDECEXTENCION")
+                || rol.equals("ROLE_ESTUDIANTE")) {
             if (redirect) {
+                if ((Boolean) atributes.get("estado")) {
+                    atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+                } else {
+                    atributes.put("notificaciones", notificacionServises.allNotificacionesByRemitente(username));
+                }
                 this.redirect = false;
                 return new ModelAndView("Index.html", atributes);
             } else {
-                atributes.put("url","ubicacion");
+                atributes.put("estado", true);
+                atributes.put("notificaciones", notificacionServises.allNotificacionesByDestinatario(username));
+                atributes.put("activo", false);
+                atributes.put("notificacion", new Notificaciones());
+                atributes.put("datosN", uServises.allUsers());
+                atributes.put("url", "ubicacion");
                 atributes.put("datos", servises.allUbicacion());
-                atributes.put("datosUsers", uServises.allUsersEstudiantesNoUbicados());
+                atributes.put("datosU", uServises.allUsersEstudiantesNoUbicados());
                 atributes.put("buscar", "");
                 atributes.put("dataForm", new Ubicacion());
                 atributes.put("modificar", false);
@@ -88,6 +105,30 @@ public class UbicacionControls {
             atributes.replace("datos", servises.searchUbicacion(text));
         }
         atributes.replace("buscar", text);
+        return "redirect:/ubicacion";
+    }
+
+    @PostMapping("/notificacion")
+    private String addNotificacion(@ModelAttribute("notificacion") Notificaciones notificacion) {
+        notificacionServises.saveNotificacion(notificacion);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/ubicacion";
+    }
+
+    @PostMapping("/notificacion/delete")
+    private String deleteNotificacion(@RequestParam("ids") Integer ids[]) {
+        notificacionServises.deleteNotificacion(ids);
+        this.redirect = true;
+        atributes.replace("activo", true);
+        return "redirect:/ubicacion";
+    }
+
+    @PostMapping("/notificacion/estado")
+    private String estadoNotificacion(@RequestParam("estado") Boolean estado) {
+        atributes.replace("estado", estado);
+        this.redirect = true;
+        atributes.replace("activo", true);
         return "redirect:/ubicacion";
     }
 }

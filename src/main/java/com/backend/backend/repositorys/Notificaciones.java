@@ -17,6 +17,10 @@ public class Notificaciones implements Serializable {
     private Integer id;
     @Column
     private String mensaje;
+    @Column
+    private String nombreRemitente;
+    @Column
+    private String nombreDestinatario;
     @OneToOne
     private Users remitente;
     @OneToOne
@@ -56,6 +60,22 @@ public class Notificaciones implements Serializable {
 
     public void setDestinatario(Users destinatario) {
         this.destinatario = destinatario;
+    }
+
+    public String getNombreDestinatario() {
+        return nombreDestinatario;
+    }
+
+    public void setNombreDestinatario(String nombreDestinatario) {
+        this.nombreDestinatario = nombreDestinatario;
+    }
+
+    public String getNombreRemitente() {
+        return nombreRemitente;
+    }
+
+    public void setNombreRemitente(String nombreRemitente) {
+        this.nombreRemitente = nombreRemitente;
     }
 
     @Override

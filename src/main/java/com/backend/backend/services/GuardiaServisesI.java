@@ -3,7 +3,6 @@ package com.backend.backend.services;
 import java.util.Arrays;
 import java.util.List;
 
-import com.backend.backend.controls.exceptions.GuardiaException;
 import com.backend.backend.repositorys.Guardia;
 import com.backend.backend.repositorys.GuardiaI;
 import com.backend.backend.repositorys.Integrante;
@@ -37,7 +36,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public Guardia findGuardiaById(Integer id) {
         if (id == null || id < 0) {
-            throw new GuardiaException("Balor invalido al realizar la busqueda");
+            throw new RuntimeException("Balor invalido al realizar la busqueda");
         } else {
             return repository.findById(id).get();
         }
@@ -46,7 +45,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void saveGuardia(Guardia guardia) {
         if (guardia == null || guardia.getId() != null) {
-            throw new GuardiaException("Balor invalido para salbar");
+            throw new RuntimeException("Balor invalido para salbar");
         } else {
             guardia.setRepresentante(service.findUserById(guardia.getRepresentante().getId()));
             guardia.addOrUpdateSerch();
@@ -57,7 +56,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void updateGuardia(Guardia guardia) {
         if (guardia == null || guardia.getId() == null) {
-            throw new GuardiaException("Balor invalido para salbar");
+            throw new RuntimeException("Balor invalido para salbar");
         } else {
             guardia.setRepresentante(service.findUserById(guardia.getRepresentante().getId()));
             guardia.addOrUpdateSerch();
@@ -73,7 +72,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void saveIntegrante(Integer idG, Integrante integrante) {
         if (integrante.getId() != null) {
-            throw new GuardiaException("Balor invalido para salbar Integrante");
+            throw new RuntimeException("Balor invalido para salbar Integrante");
         } else {
             integrante.setGuardia(repository.findById(idG).get());
             repositoryI.save(integrante);
@@ -88,7 +87,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public Integrante findIntegrateById(Integer id) {
         if (id == null) {
-            throw new GuardiaException("Balor invalido para buscar Integrante por id");
+            throw new RuntimeException("Balor invalido para buscar Integrante por id");
         } else {
             return repositoryI.findById(id).get();
         }
@@ -97,7 +96,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void updateIntegrate(Integer idG, Integrante integrante) {
         if (integrante.getId() == null) {
-            throw new GuardiaException("Balor invalido para actualizar Integrante");
+            throw new RuntimeException("Balor invalido para actualizar Integrante");
         } else {
             integrante.setGuardia(repository.findById(idG).get());
             repositoryI.save(integrante);
@@ -112,7 +111,7 @@ public class GuardiaServisesI implements GuardiaServises {
     @Override
     public void updateAdvertencia(Integer idG, String advertencia) {
         if (idG == null || advertencia == null) {
-            throw new GuardiaException("Balor invalido para actualizar Advertencia");
+            throw new RuntimeException("Balor invalido para actualizar Advertencia");
         } else {
             Guardia g = repository.findById(idG).get();
             g.setAdvertencia(advertencia);

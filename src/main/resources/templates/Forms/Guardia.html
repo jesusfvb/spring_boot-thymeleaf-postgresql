@@ -1,68 +1,117 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<body>
+  <body>
     <div th:fragment="formulario">
-        <div class="container p-0 m-0">
-            <div class="row">
-                <div class="col">
-                    <h4>
-                        <span th:if="${modificar}==false">Añadir</span>
-                        <span id="modificar" th:if="${modificar}==true">Modificar</span> Guardia
-                    </h4>
-                </div>
-                <div class="col-3">
-                    <button id="bbor" type="button" class="btn btn-danger btn-sm mt-1">Borrar</button>
-                </div>
-            </div>
+      <div class="container p-0 m-0">
+        <div class="row">
+          <div class="col">
+            <h4>
+              <span th:if="${modificar}==false">Añadir</span>
+              <span id="modificar" th:if="${modificar}==true">Modificar</span>
+              Guardia
+            </h4>
+          </div>
+          <div class="col-3">
+            <button id="bbor" type="button" class="btn btn-danger btn-sm mt-1">
+              Borrar
+            </button>
+          </div>
         </div>
-        <form id="form" th:action="@{/guardia}" th:object="${dataForm}" method="POST" autocomplete="off">
-            <input type="number" class="d-none" th:field="*{id}">
-            <input type="number" class="d-none" th:field="*{representante.id}" id="userId">
-            <div class="form-group dropdown">
-                <label>Nombre Representante</label>
-                <input type="text" class="form-control dropdown-toggle" placeholder="Entre el Nombre"
-                    th:value="${dataForm.representante.name}" data-toggle="dropdown"
-                    th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " id="nombre">
-                <div class="dropdown-menu">
-                    <a name="sugerenciaId" class="dropdown-item puntero" th:each=" u : ${datosU}" th:text="${u.name}"
-                        th:id=${u.id}></a>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Fecha</label>
-                <input th:field="*{fecha}" type="date" class="form-control "
-                    th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " placeholder="Entre La Fecha"
-                    id="fecha">
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label>Inicio</label>
-                    <input id="inicio" th:field="*{inicio}" type="time" class="form-control "
-                        th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " placeholder="Entre el Inicio">
-                </div>
-                <div class="form-group col-md-6">
-                    <label>Fin</label>
-                    <input id="fin" th:field="*{fin}" type="time" class="form-control "
-                        th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' " placeholder="Entre el Fin">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Ubicación</label>
-                <select class="form-control custom-select " th:field="*{ubicacion}" id="ubicacion"
-                    th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' ">
-                    <option value=" "></option>
-                    <option value="Residencia">Residencia</option>
-                    <option value="Docente">Docente</option>
-                </select>
-            </div>
-            <div class="text-right">
-                <a th:if="${modificar}==true" th:href="@{/guardia}" type="button"
-                    class="btn btn-danger active">Canselar</a>
-                <button type="submit" class="btn btn-primary ">Aceptar</button>
-            </div>
-        </form>
+      </div>
+      <form
+        id="form"
+        th:action="@{/guardia}"
+        th:object="${dataForm}"
+        method="POST"
+        autocomplete="off"
+      >
+        <input type="number" class="d-none" th:field="*{id}" />
+        <input
+          type="number"
+          class="d-none"
+          th:field="*{representante.id}"
+          id="userId"
+        />
+        <div class="form-group dropdown">
+          <label>Nombre Representante</label>
+          <input
+            type="text"
+            class="form-control dropdown-toggle"
+            placeholder="Entre el Nombre"
+            th:value="${dataForm.representante.name}"
+            data-toggle="dropdown"
+            th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+            id="nombre"
+          />
+          <div class="dropdown-menu">
+            <a
+              name="sugerenciaId"
+              class="dropdown-item puntero"
+              th:each=" u : ${datosU}"
+              th:text="${u.name}"
+              th:id="${u.id}"
+            ></a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Fecha</label>
+          <input
+            th:field="*{fecha}"
+            type="date"
+            class="form-control"
+            th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+            placeholder="Entre La Fecha"
+            id="fecha"
+          />
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Inicio</label>
+            <input
+              id="inicio"
+              th:field="*{inicio}"
+              type="time"
+              class="form-control"
+              th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+              placeholder="Entre el Inicio"
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label>Fin</label>
+            <input
+              id="fin"
+              th:field="*{fin}"
+              type="time"
+              class="form-control"
+              th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+              placeholder="Entre el Fin"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ubicación</label>
+          <select
+            class="form-control custom-select"
+            th:field="*{ubicacion}"
+            id="ubicacion"
+            th:classappend=" ${modificar}? ' is-valid' : ' is-invalid' "
+          >
+            <option value=" "></option>
+            <option value="Residencia">Residencia</option>
+            <option value="Docente">Docente</option>
+          </select>
+        </div>
+        <div class="text-right">
+          <a
+            th:if="${modificar}==true"
+            th:href="@{/guardia}"
+            type="button"
+            class="btn btn-danger active"
+            >Canselar</a
+          >
+          <button type="submit" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
-</body>
-
+  </body>
 </html>

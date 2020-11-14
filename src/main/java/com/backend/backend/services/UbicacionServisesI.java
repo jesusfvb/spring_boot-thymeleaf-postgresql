@@ -3,8 +3,6 @@ package com.backend.backend.services;
 import java.util.Arrays;
 import java.util.List;
 
-import com.backend.backend.controls.exceptions.UbicacionException;
-import com.backend.backend.controls.exceptions.UserException;
 import com.backend.backend.repositorys.Ubicacion;
 import com.backend.backend.repositorys.UbicacionI;
 
@@ -28,7 +26,7 @@ public class UbicacionServisesI implements UbicacionServises {
     @Override
     public List<Ubicacion> searchUbicacion(String text) {
         if (text == null || text.length() == 0) {
-            throw new UbicacionException("Falta el texto de Busqueda");
+            throw new RuntimeException("Falta el texto de Busqueda");
         } else {
             return repository.searchUbicacion(text);
         }
@@ -37,7 +35,7 @@ public class UbicacionServisesI implements UbicacionServises {
     @Override
     public Ubicacion findUbicacionById(Integer id) {
         if (id == null || id < 0) {
-            throw new UbicacionException("Balor de Busqueda Incorrecto");
+            throw new RuntimeException("Balor de Busqueda Incorrecto");
         } else {
             return repository.findById(id).get();
         }
@@ -46,7 +44,7 @@ public class UbicacionServisesI implements UbicacionServises {
     @Override
     public void saveUbicacion(Ubicacion ubicacion) {
         if (ubicacion == null || ubicacion.getId() != null) {
-            throw new UserException("Dato Incorecto en saveUbicacion");
+            throw new RuntimeException("Dato Incorecto en saveUbicacion");
         } else {
             ubicacion.setUser(serviseUser.findUserById(ubicacion.getUser().getId()));
             ubicacion.addOrUpdateSerch();
@@ -58,7 +56,7 @@ public class UbicacionServisesI implements UbicacionServises {
     @Override
     public void updateUbicacion(Ubicacion ubicacion) {
         if (ubicacion == null || ubicacion.getId() == null) {
-            throw new UserException("Dato Incorecto en updateUbicacion");
+            throw new RuntimeException("Dato Incorecto en updateUbicacion");
         } else {
             ubicacion.setUser(serviseUser.findUserById(ubicacion.getUser().getId()));
             ubicacion.addOrUpdateSerch();
@@ -69,7 +67,7 @@ public class UbicacionServisesI implements UbicacionServises {
     @Override
     public void deleteUbicacion(Integer[] ids) {
         if (ids.length == 0 || ids == null) {
-            throw new UserException("Datos incorrectos para deleteUbicacion");
+            throw new RuntimeException("Datos incorrectos para deleteUbicacion");
         } else {
             repository.deleteAll(repository.findAllById(Arrays.asList(ids)));
         }

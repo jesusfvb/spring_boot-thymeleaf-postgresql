@@ -43,7 +43,7 @@
             <a
               name="sugerenciaId"
               class="dropdown-item puntero"
-              th:each=" user : ${datosUsers}"
+              th:each=" user : ${datosU}"
               th:text="${user.name}"
               th:id="${user.id}"
               th:disabled="${#authorization.expression('hasRole(''ROLE_VICDECEXTENCION'')')}"
